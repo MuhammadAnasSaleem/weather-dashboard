@@ -4,59 +4,189 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Weather App</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="main">
-      <div class="nav">
-        <ul>
-          <li>Home</li>
-          <li>Chat</li>
-          <li>Map</li>
-          <li>Forecast</li>
-          <li>Alerts</li>
-          <li>Setting</li>
+      <!-- SIDEBAR NAV -->
+      <nav class="sidebar">
+        <div class="sidebar-logo">
+          <span class="logo-icon">☁️</span>
+        </div>
+        <ul class="nav-list">
+          <li class="nav-item nav-active">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">Home</span>
+          </li>
+          <li class="nav-item">
+            <span class="nav-icon">🗺️</span>
+            <span class="nav-label">Forecast</span>
+          </li>
+          <li class="nav-item">
+            <span class="nav-icon">⚙️</span>
+            <span class="nav-label">Settings</span>
+          </li>
         </ul>
-      </div>
-      <div class="hero">
-        <div>
-          <div><span>hello</span> <span>Anas saleem</span></div>
-          <div><input type="text" placeholder="enter city" /></div>
-          <div>
-            <ul>
-              <li>calender</li>
-              <li>message</li>
-              <li>notification</li>
-            </ul>
+        <div class="sidebar-logout">
+          <span class="nav-icon">🚪</span>
+        </div>
+      </nav>
+
+      <!-- MAIN CONTENT -->
+      <div class="content">
+        <!-- TOP BAR -->
+        <div class="topbar">
+          <div class="user-details">
+            <span class="user-greeting">Hello,</span>
+            <span class="user-name">Anas Saleem</span>
+          </div>
+          <div class="search-bar">
+            <input
+              class="search-field"
+              type="text"
+              placeholder="Search for city, place..."
+            />
+            <button class="search-btn">🔍</button>
+          </div>
+          <div class="topbar-icons">
+            <button class="icon-btn">📅</button>
+            <button class="icon-btn">💬</button>
+            <button class="icon-btn notification-btn">
+              🔔<span class="notif-dot"></span>
+            </button>
           </div>
         </div>
-        <div>
-          <div>
-            <div class="location">karachi,Pakistan</div>
-            <span>Today Sunny</span>
-            <h2>25°C</h2>
-            <span>Partly Sunny</span>
-            <p>feels like 26°C</p>
-            <ul>
-              <li><span>wind</span> <span>12km/h</span></li>
-              <li><span>Humidity</span> <span>87%</span></li>
-              <li><span>Visibility </span> <span>4.2km</span></li>
+
+        <!-- CARDS GRID -->
+        <div class="cards-grid">
+          <!-- CURRENT WEATHER CARD -->
+          <div class="card weather-card">
+            <div class="weather-location">
+              <span class="location-pin">📍</span>
+              <span class="location-name">Karachi, Pakistan</span>
+            </div>
+            <span class="weather-label">Today Sunny</span>
+            <div class="weather-main">
+              <h1 class="weather-temp">25°C</h1>
+              <div class="weather-icon">☀️</div>
+            </div>
+            <span class="weather-condition">Partly Sunny</span>
+            <p class="feels-like">Feels like 26°C</p>
+            <ul class="weather-stats">
+              <li class="weather-stat-item">
+                <span class="stat-icon">💨</span>
+                <span class="stat-label">Wind</span>
+                <span class="stat-value">12 km/h NE</span>
+              </li>
+              <li class="weather-stat-item">
+                <span class="stat-icon">💧</span>
+                <span class="stat-label">Humidity</span>
+                <span class="stat-value">87%</span>
+              </li>
+              <li class="weather-stat-item">
+                <span class="stat-icon">👁️</span>
+                <span class="stat-label">Visibility</span>
+                <span class="stat-value">4.2 km</span>
+              </li>
             </ul>
           </div>
-          <div>
-            <span>Air quality</span><span>Main pollution:PM 2.5</span>
-            <h2>390</h2>
-            <span>west wind</span>
-            <div>
-              <span>good</span><span>standard</span><span>Hazardous</span>
+
+          <!-- AIR QUALITY CARD -->
+          <div class="card airquality-card">
+            <div class="aqr-header">
+              <span class="aqr-label">Air Quality</span>
+              <span class="aqr-pollution">Main pollution: PM 2.5</span>
+            </div>
+            <div class="aqr-score-wrapper">
+              <h2 class="aqr-number">45</h2>
+              <span class="aqr-unit">AQI</span>
+            </div>
+            <span class="aqr-status">Good</span>
+            <p class="aqr-description">Air is fresh and healthy</p>
+            <div class="aqr-bar">
+              <div class="aqr-bar-fill"></div>
+              <div class="aqr-bar-marker"></div>
+            </div>
+            <div class="aqr-bar-labels">
+              <span class="aqr-bar-label">Good</span>
+              <span class="aqr-bar-label">Moderate</span>
+              <span class="aqr-bar-label">Hazardous</span>
             </div>
           </div>
+
+          <!-- TODAY HIGHLIGHTS CARD -->
+          <div class="card highlights-card">
+            <div class="highlights-title">Today's Highlights</div>
+            <div class="highlights-list">
+              <div class="highlight-item">
+                <span class="highlight-icon">☀️</span>
+                <span class="highlight-label">UV Index</span>
+                <span class="highlight-value">5</span>
+                <span class="highlight-sub">Moderate</span>
+              </div>
+              <div class="highlight-item">
+                <span class="highlight-icon">🌅</span>
+                <span class="highlight-label">Sunrise</span>
+                <span class="highlight-value">5:35 AM</span>
+              </div>
+              <div class="highlight-item">
+                <span class="highlight-icon">🌇</span>
+                <span class="highlight-label">Sunset</span>
+                <span class="highlight-value">6:20 PM</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- HOURLY CHART CARD -->
+          <div class="card chart-card">
+            <div class="chart-header">
+              <p class="chart-title">How is the temperature today?</p>
+              <div class="chart-toggle">
+                <button class="toggle-btn toggle-active">Hourly</button>
+                <button class="toggle-btn">Daily</button>
+              </div>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="tempChart"></canvas>
+            </div>
+            <p class="chart-summary">
+              The highest temperature will be
+              <span class="chart-highlight">28°C at 4 PM</span>
+            </p>
+          </div>
+
+          <!-- TOMORROW CARD -->
+          <div class="card tomorrow-card">
+            <div class="tomorrow-header">
+              <span class="tomorrow-label">Tomorrow</span>
+              <span class="tomorrow-location">Karachi, Pakistan</span>
+            </div>
+            <div class="tomorrow-visual">
+              <div class="tomorrow-icon">🌧️</div>
+            </div>
+            <div class="tomorrow-info">
+              <span class="tomorrow-temp">23°C</span>
+              <span class="tomorrow-condition">Rainy</span>
+            </div>
+            <button class="forecast-btn">View Full Forecast →</button>
+          </div>
         </div>
-        <div>
-          <div></div>
-          <div></div>
-          <div></div>
+        <!-- end cards-grid -->
+
+        <!-- ALERT BAR -->
+        <div class="alert-bar">
+          <span class="alert-icon">⚡</span>
+          <div class="alert-text">
+            <span class="alert-title">Thunderstorms expected on Wednesday</span>
+            <span class="alert-sub">Stay indoors and take precautions.</span>
+          </div>
+          <button class="alert-btn">View Alerts</button>
         </div>
       </div>
+      <!-- end content -->
     </div>
+    <!-- end main -->
+
+    <script src="script.js"></script>
   </body>
 </html>
