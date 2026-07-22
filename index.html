@@ -86,44 +86,56 @@
             <button class="icon-btn">
               <i class="fa-regular fa-message"></i>
             </button>
-            <button class="icon-btn"><i class="fa-regular fa-bell"></i></button>
+            <button class="icon-btn"><i class=fa-regular fa-bell"></i></button>
           </div>
         </div>
 
         <!-- CARDS GRID -->
         <div class="cards-grid">
-          <!-- CURRENT WEATHER CARD -->
-          <div class="card weather-card">
+          <div class="top-row">
+
+            
+            <!-- CURRENT WEATHER CARD -->
+            <div class="card weather-card">
             <div class="weather-location">
-              <span class="location-pin">📍</span>
+              <span class="location-pin"><i class="fa-solid fa-location-dot"></i></span>
               <span class="location-name">Karachi, Pakistan</span>
             </div>
             <span class="weather-label">Today Sunny</span>
             <div class="weather-main">
               <h1 class="weather-temp">25°C</h1>
-              <div class="weather-icon">☀️</div>
+              
             </div>
             <span class="weather-condition">Partly Sunny</span>
             <p class="feels-like">Feels like 26°C</p>
             <ul class="weather-stats">
               <li class="weather-stat-item">
                 <span class="stat-icon">💨</span>
-                <span class="stat-label">Wind</span>
-                <span class="stat-value">12 km/h NE</span>
+                <div>
+                  <span class="stat-label">Wind</span>
+                  
+                  <span class="stat-value">12 km/h NE</span>
+                </div>
               </li>
               <li class="weather-stat-item">
                 <span class="stat-icon">💧</span>
-                <span class="stat-label">Humidity</span>
-                <span class="stat-value">87%</span>
+                <div>
+
+                  <span class="stat-label">Humidity</span>
+                  <span class="stat-value">87%</span>
+                </div>
               </li>
               <li class="weather-stat-item">
                 <span class="stat-icon">👁️</span>
-                <span class="stat-label">Visibility</span>
-                <span class="stat-value">4.2 km</span>
+                <div>
+
+                  <span class="stat-label">Visibility</span>
+                  <span class="stat-value">4.2 km</span>
+                </div>
               </li>
             </ul>
           </div>
-
+          
           <!-- AIR QUALITY CARD -->
           <div class="card airquality-card">
             <div class="aqr-header">
@@ -137,7 +149,6 @@
             <span class="aqr-status">Good</span>
             <p class="aqr-description">Air is fresh and healthy</p>
             <div class="aqr-bar">
-              <div class="aqr-bar-fill"></div>
               <div class="aqr-bar-marker"></div>
             </div>
             <div class="aqr-bar-labels">
@@ -146,30 +157,42 @@
               <span class="aqr-bar-label">Hazardous</span>
             </div>
           </div>
+        </div>
+          <div class="bottom-row">
 
-          <!-- TODAY HIGHLIGHTS CARD -->
-          <div class="card highlights-card">
+            <!-- TODAY HIGHLIGHTS CARD -->
+            <div class="card highlights-card">
             <div class="highlights-title">Today's Highlights</div>
             <div class="highlights-list">
+             
               <div class="highlight-item">
-                <span class="highlight-icon">☀️</span>
-                <span class="highlight-label">UV Index</span>
-                <span class="highlight-value">5</span>
-                <span class="highlight-sub">Moderate</span>
-              </div>
-              <div class="highlight-item">
-                <span class="highlight-icon">🌅</span>
-                <span class="highlight-label">Sunrise</span>
+                <span class="highlight-label">☀️Sunrise</span>
                 <span class="highlight-value">5:35 AM</span>
               </div>
               <div class="highlight-item">
-                <span class="highlight-icon">🌇</span>
-                <span class="highlight-label">Sunset</span>
+                <span class="highlight-label">🌇Sunset</span>
                 <span class="highlight-value">6:20 PM</span>
               </div>
+               <div class="highlight-item">
+                <span class="highlight-label">UV Index</span>
+                <span class="highlight-sub">Moderate</span>
+              </div>
             </div>
-          </div>
+            <div class="circular-gauge">
+  <svg class="gauge-svg" viewBox="0 0 100 100">
+    <!-- Background Circle -->
+    <circle class="gauge-bg" cx="50" cy="50" r="40" />
+    <!-- Animated Foreground Circle -->
+    <circle class="gauge-fill" id="aqiGauge" cx="50" cy="50" r="40" />
+  </svg>
+  <div class="gauge-value-container">
+    <span class="gauge-number" id="aqiValue">45</span>
+    <span class="gauge-unit">AQI</span>
+  </div>
+</div>
 
+          </div>
+          
           <!-- HOURLY CHART CARD -->
           <div class="card chart-card">
             <div class="chart-header">
@@ -179,13 +202,7 @@
                 <button class="toggle-btn">Daily</button>
               </div>
             </div>
-            <div class="chart-wrapper">
-              <canvas id="tempChart"></canvas>
-            </div>
-            <p class="chart-summary">
-              The highest temperature will be
-              <span class="chart-highlight">28°C at 4 PM</span>
-            </p>
+            <div class="chart-data"></div>
           </div>
 
           <!-- TOMORROW CARD -->
@@ -205,16 +222,10 @@
           </div>
         </div>
         <!-- end cards-grid -->
+      </div>
 
         <!-- ALERT BAR -->
-        <div class="alert-bar">
-          <span class="alert-icon">⚡</span>
-          <div class="alert-text">
-            <span class="alert-title">Thunderstorms expected on Wednesday</span>
-            <span class="alert-sub">Stay indoors and take precautions.</span>
-          </div>
-          <button class="alert-btn">View Alerts</button>
-        </div>
+      
       </div>
       <!-- end content -->
     </div>
