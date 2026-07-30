@@ -274,6 +274,11 @@ body {
   align-items: center;
   font-size: 0.75rem;
   color: #f5ebd6;
+  min-width: 100px;
+}
+.stat-div {
+  display: flex;
+  flex-direction: column;
 }
 
 .stat-label {
