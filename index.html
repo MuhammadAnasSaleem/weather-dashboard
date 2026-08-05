@@ -149,7 +149,9 @@
             <span class="aqr-status">Good</span>
             <p class="aqr-description">Air is fresh and healthy</p>
             <div class="aqr-bar">
-              <div class="aqr-bar-marker"></div>
+              <!-- gemini code -->
+              <div class="aqr-bar-marker" style="left: 22.5%;"></div>
+              <!-- gemini code -->
             </div>
             <div class="aqr-bar-labels">
               <span class="aqr-bar-label">Good</span>
@@ -164,18 +166,22 @@
             <div class="card highlights-card">
             <div class="highlights-title">Today's Highlights</div>
             <div class="highlights-list">
+               <div class="highlight-item">
+                <span class="highlight-label">Time🕐</span>
+                <span class="highlight-sub time">04:54 PM</span>
+              </div>
              
               <div class="highlight-item">
-                <span class="highlight-label">☀️Sunrise</span>
-                <span class="highlight-value">5:35 AM</span>
+                <span class="highlight-label">Sunrise☀️</span>
+                <span class="highlight-value sunrise">5:35 AM</span>
               </div>
               <div class="highlight-item">
-                <span class="highlight-label">🌇Sunset</span>
-                <span class="highlight-value">6:20 PM</span>
+                <span class="highlight-label">Sunset🌇</span>
+                <span class="highlight-value sunset">6:20 PM</span>
               </div>
                <div class="highlight-item">
                 <span class="highlight-label">UV Index</span>
-                <span class="highlight-sub">Moderate</span>
+                <span class="highlight-sub uv-index">Moderate</span>
               </div>
             </div>
             <div class="circular-gauge">
@@ -183,11 +189,15 @@
     <!-- Background Circle -->
     <circle class="gauge-bg" cx="50" cy="50" r="40" />
     <!-- Animated Foreground Circle -->
-    <circle class="gauge-fill" id="aqiGauge" cx="50" cy="50" r="40" />
+    <!-- gemini code -->
+    <circle class="gauge-fill" id="uvGauge" cx="50" cy="50" r="40" style="stroke-dashoffset: 167.5; stroke: #facc15;" />
+    <!-- gemini code -->
   </svg>
   <div class="gauge-value-container">
-    <span class="gauge-number" id="aqiValue">45</span>
-    <span class="gauge-unit">AQI</span>
+    <!-- gemini code -->
+    <span class="gauge-number" id="uvValue">4</span>
+    <span class="gauge-unit">UV</span>
+    <!-- gemini code -->
   </div>
 </div>
 

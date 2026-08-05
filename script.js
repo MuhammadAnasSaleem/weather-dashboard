@@ -73,13 +73,22 @@ const getWeather = async (event) => {
   let city = searchBar.value;
   const cordinates = await getCordinates(city);
   const response = await fetch(
-    `https://api.open-meteo.com/v1/forecast?latitude=${cordinates.lat}&longitude=${cordinates.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m,weathercode,uv_index,visibility&daily=sunrise,sunset,temperature_2m_max,temperature_2m_min,weathercode&hourly=temperature_2m,weathercode&timezone=Asia/Karachi&forecast_days=2`,
+    `https://api.open-meteo.com/v1/forecast?latitude=${cordinates.lat}&longitude=${cordinates.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m,weathercode,uv_index,visibility&daily=sunrise,sunset,temperature_2m_max,temperature_2m_min,weathercode&hourly=temperature_2m,weathercode&timezone=auto&forecast_days=2`,
+  );
+  const aqiResponse = await fetch(
+    `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${cordinates.lat}&longitude=${cordinates.lon}&current=european_aqi,pm2_5&timezone=auto`,
   );
   const data = await response.json();
   const code = data.current.weathercode;
   const sunrise = data.daily.sunrise[0];
+  const sunriseTime = sunrise.split("T")[1];
+  const aqiData = await aqiResponse.json();
+  console.log(aqiData);
+
   const sunset = data.daily.sunset[0];
+  let sunsetTime = sunset.split("T")[1];
   const currentTime = data.current.time;
+  let time = currentTime.split("T")[1];
   console.log(code);
 
   console.log(data, "getweather");
@@ -106,6 +115,114 @@ const getWeather = async (event) => {
   document.querySelector(".weather-card").style.backgroundImage =
     `url(${getWeatherImage(code, currentTime, sunrise, sunset)})`;
   //weather box end here
+
+  //today highlight card
+  let isAM = false;
+  if (Number(time.split(":")[0]) < 12) {
+    isAM = true;
+  }
+  if (!isAM) {
+    const displayHour = Number(time.split(":")[0]) - 12 || 12;
+    time = displayHour + ":" + time.split(":")[1] + " PM";
+  } else {
+    const displayHour = Number(time.split(":")[0]) || 12;
+    time = displayHour + ":" + time.split(":")[1] + " AM";
+  }
+  if (Number(sunsetTime.split(":")[0]) > 12) {
+    const displayHour = Number(sunsetTime.split(":")[0]) - 12;
+    sunsetTime = displayHour + ":" + sunsetTime.split(":")[1];
+  }
+
+  const getUvIndex = (uv) => {
+    if (uv <= 2) return "Low";
+    if (uv <= 5) return "Moderate";
+    if (uv <= 7) return "High";
+    if (uv <= 10) return "Very High";
+    return "Extreme";
+  };
+  document.querySelector(".sunrise").textContent = `${sunriseTime} AM`;
+  document.querySelector(".sunset").textContent = `${sunsetTime} PM`;
+  document.querySelector(".time").textContent = `${time}`;
+  document.querySelector(".uv-index").textContent = getUvIndex(
+    data.current.uv_index,
+  );
+  // gemini code
+  const uvVal = data.current.uv_index;
+  const maxUv = 12;
+  const circumference = 251.2;
+  const offset =
+    circumference - (Math.min(uvVal, maxUv) / maxUv) * circumference;
+  const uvGauge = document.getElementById("uvGauge");
+  const uvValue = document.getElementById("uvValue");
+  if (uvGauge && uvValue) {
+    uvValue.textContent = uvVal;
+    uvGauge.style.strokeDashoffset = offset;
+    if (uvVal <= 2) {
+      uvGauge.style.stroke = "#4ade80"; // Green for safe
+    } else if (uvVal <= 5) {
+      uvGauge.style.stroke = "#facc15"; // Yellow for medium
+    } else if (uvVal <= 7) {
+      uvGauge.style.stroke = "#fb923c"; // Orange for high
+    } else {
+      uvGauge.style.stroke = "#ef4444"; // Red for dangerously high
+    }
+  }
+  // gemini code
+  const getAqiDescription = (aqi) => {
+    if (aqi <= 20) return "Good";
+    if (aqi <= 40) return "Fair";
+    if (aqi <= 60) return "Moderate";
+    if (aqi <= 80) return "Poor";
+    if (aqi <= 100) return "Very Poor";
+    return "Hazardous";
+  };
+  document.querySelector(".aqr-pollution").textContent =
+    `Main Pollution: PM ${aqiData.current.pm2_5}`;
+  document.querySelector(".aqr-number").textContent =
+    aqiData.current.european_aqi;
+  const aqrStatus = document.querySelector(".aqr-status");
+  aqrStatus.textContent = getAqiDescription(aqiData.current.european_aqi);
+  // gemini code
+  const aqrMarker = document.querySelector(".aqr-bar-marker");
+  if (aqrMarker) {
+    aqrMarker.style.left = `${Math.min(aqiData.current.european_aqi, 100)}%`;
+  }
+  // gemini code
+
+
+  const aqrstatusfont = (res) => {
+    if (res === "Good") {
+      aqrStatus.style.color = "#4ade80";
+    }
+    if (res === "Fair") {
+      aqrStatus.style.color = "#4ade80";
+    }
+    if (res === "Moderate") {
+      aqrStatus.style.color = "#facc15";
+    }
+    if (res === "Poor") {
+      aqrStatus.style.color = "#fb923c";
+    }
+    if (res === "Very Poor") {
+      aqrStatus.style.color = "#ef4444";
+    }
+    if (res === "Hazardous") {
+      aqrStatus.style.color = "#ef4444";
+    }
+  };
+  const getAqiMessage = (aqi) => {
+    if (aqi <= 20) return "Air is fresh and healthy";
+    if (aqi <= 40) return "Air quality is acceptable";
+    if (aqi <= 60) return "Sensitive groups may be affected";
+    if (aqi <= 80) return "Everyone may experience health effects";
+    if (aqi <= 100) return "Health alert for everyone";
+    return "Hazardous, avoid outdoor activities";
+  };
+  document.querySelector(".aqr-description").textContent = getAqiMessage(
+    aqiData.current.european_aqi,
+  );
+
+  aqrstatusfont(getAqiDescription(aqiData.current.european_aqi));
 };
 
 form.addEventListener("submit", getWeather);

@@ -300,6 +300,7 @@ body {
   justify-content: space-between;
   padding: 1.25rem 1.5rem;
   border: 1px solid #2d3446;
+  gap: 0.5rem;
 }
 
 .aqr-header {
@@ -409,7 +410,7 @@ body {
 .highlights-list {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.6rem;
   font-size: 0.85rem;
 }
 
