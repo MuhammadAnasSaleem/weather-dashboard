@@ -21,8 +21,14 @@
   </head>
   <body>
     <div class="main">
+      <!-- MOBILE HAMBURGER -->
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle navigation menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
       <!-- SIDEBAR NAV -->
-      <nav class="sidebar">
+      <nav class="sidebar" id="sidebar">
         <div class="sidebar-logo">
           <span class="logo-icon"
             ><img
@@ -73,7 +79,7 @@
             <input
               class="search-field"
               type="text"
-              placeholder="Search for city, place..."
+              placeholder="Search for city, place... type(/) for jump to searchbar"
             />
             <button class="search-btn">
               <i class="fa-solid fa-magnifying-glass"></i>

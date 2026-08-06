@@ -163,26 +163,71 @@ const hourlyRender = (data) => {
 };
 //getting response
 const getCordinates = async (city) => {
-  const response = await fetch(
-    `https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=1`,
-  );
-  const data = await response.json();
-  let cityName = data.results[0].name;
-  let country = data.results[0].country;
-  console.log(cityName, country);
+  if (city != "") {
+    const response = await fetch(
+      `https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=1`,
+    );
+    const data = await response.json();
+    let cityName = data.results[0].name;
+    let country = data.results[0].country;
+    console.log(cityName, country);
 
-  console.log(data, "getcordinates");
-  return {
-    lat: data.results[0].latitude,
-    lon: data.results[0].longitude,
-    cityName,
-    country,
-  };
+    console.log(data, "getcordinates");
+    return {
+      lat: data.results[0].latitude,
+      lon: data.results[0].longitude,
+      cityName,
+      country,
+    };
+  } else {
+    try {
+      const position = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            console.log("location granted", pos);
+            resolve(pos);
+          },
+          (err) => {
+            console.log("location denied", err);
+            reject(err);
+          },
+        );
+      });
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
+      );
+      const data = await response.json();
+      console.log(data, "reversecall");
+
+      const cityName = data.address.city.split(" ")[0];
+      const country = data.address.country;
+      console.log(cityName);
+
+      return {
+        lat,
+        lon,
+        cityName,
+        country,
+      };
+    } catch {
+      console.log("catch working");
+
+      return {
+        lat: 24.85,
+        lon: 66.99,
+        cityName: "karaci",
+        country: "Pakistan1",
+      };
+    }
+  }
 };
 
 const getWeather = async (event) => {
-  event.preventDefault();
+  if (event) event.preventDefault();
   let city = searchBar.value;
+
   const cordinates = await getCordinates(city);
   const response = await fetch(
     `https://api.open-meteo.com/v1/forecast?latitude=${cordinates.lat}&longitude=${cordinates.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m,weathercode,uv_index,visibility&daily=sunrise,sunset,temperature_2m_max,temperature_2m_min,weathercode&hourly=temperature_2m,weathercode&timezone=auto&forecast_days=5&past_days=0`,
@@ -325,6 +370,59 @@ const getWeather = async (event) => {
   document.querySelector(".tomorrow-card").style.backgroundImage =
     `url(${getTommorowImage(data.daily.weathercode[0])})`;
   // console.log(data.dai);
+
+  searchBar.value = "";
+};
+getWeather();
+form.addEventListener("submit", getWeather);
+
+// ── Mobile Sidebar Toggle ──
+const hamburgerBtn = document.getElementById("hamburgerBtn");
+const sidebar = document.getElementById("sidebar");
+const sidebarOverlay = document.getElementById("sidebarOverlay");
+
+const openSidebar = () => {
+  sidebar.classList.add("open");
+  sidebarOverlay.classList.add("active");
+  hamburgerBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+  hamburgerBtn.setAttribute("aria-expanded", "true");
 };
 
-form.addEventListener("submit", getWeather);
+const closeSidebar = () => {
+  sidebar.classList.remove("open");
+  sidebarOverlay.classList.remove("active");
+  hamburgerBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+  hamburgerBtn.setAttribute("aria-expanded", "false");
+};
+
+hamburgerBtn.addEventListener("click", () => {
+  if (sidebar.classList.contains("open")) {
+    closeSidebar();
+  } else {
+    openSidebar();
+  }
+});
+
+sidebarOverlay.addEventListener("click", closeSidebar);
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && sidebar.classList.contains("open")) {
+    closeSidebar();
+  }
+});
+
+// Close sidebar when a nav item is clicked (mobile UX)
+document.querySelectorAll(".nav-item").forEach((item) => {
+  item.addEventListener("click", () => {
+    if (window.innerWidth < 1024) {
+      closeSidebar();
+    }
+  });
+});
+// this is for directly jumping to searchbar
+document.addEventListener("keydown", (e) => {
+  if (e.key === "/" && document.activeElement !== searchBar) {
+    e.preventDefault();
+    searchBar.focus();
+  }
+});
