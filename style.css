@@ -511,7 +511,7 @@ circle {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-image: url("./assets/tomorow-image.png");
+  background-image: url("./assets/tommorow-sunny.png");
 }
 
 .tomorrow-header {
@@ -528,7 +528,7 @@ circle {
 
 .tomorrow-location {
   font-size: 0.8rem;
-  color: #c2b9a7;
+  color: #ffffff;
 }
 
 .tomorrow-info {
@@ -540,12 +540,12 @@ circle {
 .tomorrow-temp {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #f5ebd6;
+  color: #fff;
 }
 
 .tomorrow-condition {
   font-size: 0.85rem;
-  color: #c2b9a7;
+  color: #fff;
 }
 
 .forecast-btn {
@@ -650,8 +650,20 @@ circle {
   align-items: center;
   flex: 1;
   min-width: 0;
+  animation: fadeIn 0.3s ease forwards;
+  opacity: 0;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 .chart-data-img {
   width: 42px;
   height: 36px;

@@ -4,11 +4,16 @@ toggleButtons.forEach((btn) => {
   btn.addEventListener("click", () => {
     toggleButtons.forEach((b) => b.classList.remove("toggle-active"));
     btn.classList.add("toggle-active");
+    if (btn.textContent === "Daily") {
+      dailyRender(weatherData);
+    } else {
+      hourlyRender(weatherData);
+    }
   });
 });
 
 // app logic
-
+let weatherData = null;
 let searchBar = document.querySelector(".search-field");
 let form = document.querySelector(".search-bar");
 // weather discription
@@ -49,6 +54,113 @@ const getWeatherImage = (code, time, sunrise, sunset) => {
   if (code >= 95) return "./assets/rainy.png";
   return "./assets/cloudy.png";
 };
+const getTommorowImage = (code) => {
+  if (code === 0 || code === 1) return "./assets/tommorow-sunny.png";
+  if (code === 2 || code === 3) return "./assets/tommorow-cloudy.png";
+  if (code >= 61 && code <= 65) return "./assets/tomorow-rainy.png";
+  if (code >= 95) return "./assets/tommorow-windy.png";
+  return "./assets/tommorow-cloudy.png";
+};
+const getUvIndex = (uv) => {
+  if (uv <= 2) return "Low";
+  if (uv <= 5) return "Moderate";
+  if (uv <= 7) return "High";
+  if (uv <= 10) return "Very High";
+  return "Extreme";
+};
+const getAqiDescription = (aqi) => {
+  if (aqi <= 20) return "Good";
+  if (aqi <= 40) return "Fair";
+  if (aqi <= 60) return "Moderate";
+  if (aqi <= 80) return "Poor";
+  if (aqi <= 100) return "Very Poor";
+  return "Hazardous";
+};
+const getAqiMessage = (aqi) => {
+  if (aqi <= 20) return "Air is fresh and healthy";
+  if (aqi <= 40) return "Air quality is acceptable";
+  if (aqi <= 60) return "Sensitive groups may be affected";
+  if (aqi <= 80) return "Everyone may experience health effects";
+  if (aqi <= 100) return "Health alert for everyone";
+  return "Hazardous, avoid outdoor activities";
+};
+const getDailyIcon = (code) => {
+  if (code === 0 || code === 1)
+    return "./assets/afternoon-removebg-preview.png";
+  return "./assets/evening-removebg-preview.png";
+};
+
+const dailyRender = (data) => {
+  const chartData = document.querySelector(".chart-data");
+  chartData.innerHTML = ``;
+  const dates = data.daily.time;
+  dates.forEach((day, index) => {
+    const date = day.split("-")[2];
+    const temp = data.daily.temperature_2m_max[index];
+    const code = data.daily.weathercode[index];
+    const card = document.createElement("div");
+    card.classList.add("chart-data-items");
+    card.style.animationDelay = `${index * 0.05}s`;
+    card.innerHTML = `
+    <p class="chart-data-time">${date}</p>
+                <img class="chart-data-img" src="${getDailyIcon(code)}" alt="Night">
+                <p class="chart-data-temp">${temp}°C</p>
+    `;
+    chartData.appendChild(card);
+    console.log(date, temp);
+  });
+};
+const getHourlyIcon = (hour) => {
+  if (hour >= 5 && hour < 7) return "./assets/sunrise-removebg-preview.png";
+  if (hour >= 7 && hour < 12) return "./assets/afternoon-removebg-preview.png";
+  if (hour >= 12 && hour < 17) return "./assets/evening-removebg-preview.png";
+  if (hour >= 17 && hour < 20) return "./assets/night-removebg-preview.png";
+  if (hour >= 20 && hour < 24) return "./assets/midnight-removebg-preview.png";
+  return "./assets/midnight-removebg-preview.png";
+};
+
+const hourlyRender = (data) => {
+  const chartData = document.querySelector(".chart-data");
+  chartData.innerHTML = ``;
+  const currentHour = Number(data.current.time.split("T")[1].split(":")[0]);
+  console.log(currentHour);
+  const hours = [
+    currentHour,
+    currentHour + 2,
+    currentHour + 4,
+    currentHour + 6,
+    currentHour + 8,
+  ];
+  hours.forEach((hour, index) => {
+    let rawHour = Number(data.hourly.time[hour].split("T")[1].split(":")[0]);
+    let displayTime;
+    let isAM = false;
+    if (rawHour < 12) {
+      isAM = true;
+    }
+    if (!isAM) {
+      const displayHour = rawHour - 12 || 12;
+      displayTime = displayHour + "PM";
+      // time = displayHour + ":" + time.split(":")[1] + " PM";
+    } else {
+      const displayHour = rawHour || 12;
+      displayTime = displayHour + "AM";
+    }
+    const temp = data.hourly.temperature_2m[hour];
+    const code = data.hourly.weathercode[hour];
+    const card = document.createElement("div");
+    card.classList.add("chart-data-items");
+    card.style.animationDelay = `${index * 0.05}s`;
+    card.innerHTML = `
+    <p class="chart-data-time">${displayTime}</p>
+                <img class="chart-data-img" src="${getHourlyIcon(rawHour)}" alt="Night">
+                <p class="chart-data-temp">${temp}°C</p>
+    `;
+    chartData.appendChild(card);
+
+    console.log(rawHour, temp, code);
+  });
+};
 //getting response
 const getCordinates = async (city) => {
   const response = await fetch(
@@ -73,12 +185,14 @@ const getWeather = async (event) => {
   let city = searchBar.value;
   const cordinates = await getCordinates(city);
   const response = await fetch(
-    `https://api.open-meteo.com/v1/forecast?latitude=${cordinates.lat}&longitude=${cordinates.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m,weathercode,uv_index,visibility&daily=sunrise,sunset,temperature_2m_max,temperature_2m_min,weathercode&hourly=temperature_2m,weathercode&timezone=auto&forecast_days=2`,
+    `https://api.open-meteo.com/v1/forecast?latitude=${cordinates.lat}&longitude=${cordinates.lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m,weathercode,uv_index,visibility&daily=sunrise,sunset,temperature_2m_max,temperature_2m_min,weathercode&hourly=temperature_2m,weathercode&timezone=auto&forecast_days=5&past_days=0`,
   );
   const aqiResponse = await fetch(
     `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${cordinates.lat}&longitude=${cordinates.lon}&current=european_aqi,pm2_5&timezone=auto`,
   );
   const data = await response.json();
+  weatherData = data;
+  hourlyRender(weatherData);
   const code = data.current.weathercode;
   const sunrise = data.daily.sunrise[0];
   const sunriseTime = sunrise.split("T")[1];
@@ -133,13 +247,6 @@ const getWeather = async (event) => {
     sunsetTime = displayHour + ":" + sunsetTime.split(":")[1];
   }
 
-  const getUvIndex = (uv) => {
-    if (uv <= 2) return "Low";
-    if (uv <= 5) return "Moderate";
-    if (uv <= 7) return "High";
-    if (uv <= 10) return "Very High";
-    return "Extreme";
-  };
   document.querySelector(".sunrise").textContent = `${sunriseTime} AM`;
   document.querySelector(".sunset").textContent = `${sunsetTime} PM`;
   document.querySelector(".time").textContent = `${time}`;
@@ -168,14 +275,7 @@ const getWeather = async (event) => {
     }
   }
   // gemini code
-  const getAqiDescription = (aqi) => {
-    if (aqi <= 20) return "Good";
-    if (aqi <= 40) return "Fair";
-    if (aqi <= 60) return "Moderate";
-    if (aqi <= 80) return "Poor";
-    if (aqi <= 100) return "Very Poor";
-    return "Hazardous";
-  };
+
   document.querySelector(".aqr-pollution").textContent =
     `Main Pollution: PM ${aqiData.current.pm2_5}`;
   document.querySelector(".aqr-number").textContent =
@@ -188,7 +288,6 @@ const getWeather = async (event) => {
     aqrMarker.style.left = `${Math.min(aqiData.current.european_aqi, 100)}%`;
   }
   // gemini code
-
 
   const aqrstatusfont = (res) => {
     if (res === "Good") {
@@ -210,19 +309,22 @@ const getWeather = async (event) => {
       aqrStatus.style.color = "#ef4444";
     }
   };
-  const getAqiMessage = (aqi) => {
-    if (aqi <= 20) return "Air is fresh and healthy";
-    if (aqi <= 40) return "Air quality is acceptable";
-    if (aqi <= 60) return "Sensitive groups may be affected";
-    if (aqi <= 80) return "Everyone may experience health effects";
-    if (aqi <= 100) return "Health alert for everyone";
-    return "Hazardous, avoid outdoor activities";
-  };
+
   document.querySelector(".aqr-description").textContent = getAqiMessage(
     aqiData.current.european_aqi,
   );
 
   aqrstatusfont(getAqiDescription(aqiData.current.european_aqi));
+
+  document.querySelector(".tomorrow-location").textContent =
+    `${cordinates.cityName} ,${cordinates.country}`;
+  document.querySelector(".tomorrow-temp").textContent =
+    data.daily.temperature_2m_max[0] + "°C";
+  document.querySelector(".tomorrow-condition").textContent =
+    getWeatherDescription(data.daily.weathercode[0]);
+  document.querySelector(".tomorrow-card").style.backgroundImage =
+    `url(${getTommorowImage(data.daily.weathercode[0])})`;
+  // console.log(data.dai);
 };
 
 form.addEventListener("submit", getWeather);
